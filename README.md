@@ -1,0 +1,1 @@
+# osm_id_editor_template
