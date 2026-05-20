@@ -77,6 +77,51 @@ npm run id:build      # Create a production build in id-editor/dist
 npm run id:test       # Run upstream iD tests once
 ```
 
+## Local Research Project Workflow
+
+This template adds a private project/export layer on top of iD:
+
+1. Start the editor with `npm run id:start`.
+2. Open `http://127.0.0.1:8080`.
+3. Use the **Project** toolbar button to create or open a research project.
+4. Enter imagery metadata:
+   - imagery timestamp, such as `2012-06-30`
+   - imagery CRS, such as `EPSG:3857`
+   - optional custom tile/WMS template, such as
+     `https://tiles.example.org/{z}/{x}/{y}.png`
+5. Draw lines or polygons with the normal iD tools.
+6. Use **Mark Destroyed** while a feature is selected to record destruction
+   without deleting the footprint.
+7. Use **Save** or the normal save toolbar button to write the active project.
+8. Use **Export GeoJSON** to download the active project's `features.geojson`.
+
+Project data is written locally under:
+
+```text
+projects/<project-folder>/
+|-- metadata.json
+`-- features.geojson
+```
+
+The exported GeoJSON properties include the original iD tags plus:
+
+```text
+objectID
+project
+projectFolder
+imageryTimestamp
+imageryCRS
+imagerySource
+imageryLayerID
+idEditorEntityID
+idEditorEntityType
+changeType
+destroyed
+```
+
+The normal iD Save button has been repurposed in this template: it writes to the
+active local research project instead of opening the public OSM upload flow.
+
 ## Template Structure
 
 ```text
@@ -90,10 +135,8 @@ npm run id:test       # Run upstream iD tests once
 ## Next Customization Milestones
 
 1. Run the stock editor locally.
-2. Decide whether the research edits should write to GeoJSON, OSM XML, an
-   `.osc` changeset file, or a private OSM-compatible API.
-3. Add curated historical imagery layers for specific dates/locations.
-4. Add domain-specific presets for cultural heritage sites, destruction events,
+2. Add curated historical imagery layers for specific dates/locations.
+3. Add domain-specific presets for cultural heritage sites, destruction events,
    confidence levels, source imagery, date ranges, and notes.
-5. Add an export/review workflow so edits become reproducible research data
+4. Add a richer export/review workflow so edits become reproducible research data
    rather than accidental public OSM uploads.

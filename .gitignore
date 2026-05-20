@@ -1,5 +1,7 @@
 node_modules/
 dist/
+projects/
+id-editor-server.log
 .env
 .env.*
 npm-debug.log*
