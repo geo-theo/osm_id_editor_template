@@ -1,0 +1,13 @@
+{
+  "name": "osm-id-editor-template",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Template wrapper for running and customizing the OpenStreetMap iD editor locally.",
+  "scripts": {
+    "id:install": "npm --prefix id-editor clean-install",
+    "id:prepare": "npm --prefix id-editor run all",
+    "id:start": "npm --prefix id-editor start",
+    "id:build": "npm --prefix id-editor run build",
+    "id:test": "npm --prefix id-editor run test:once"
+  }
+}
