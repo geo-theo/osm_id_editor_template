@@ -77,19 +77,21 @@ npm run id:build      # Create a production build in id-editor/dist
 npm run id:test       # Run upstream iD tests once
 ```
 
-## Local Research Project Workflow
+## Local Dataset Export Workflow
 
-This template adds a private project/export layer on top of iD:
+This template is intended to be locked to one study location, such as Timbuktu.
+Within that location, you can create multiple exportable datasets, for example
+one dataset per year or imagery date.
 
 1. Start the editor with `npm run id:start`.
 2. Open `http://127.0.0.1:8080`.
-3. Use the **Project** toolbar button to create or open a research project.
+3. Use the **Dataset** toolbar button to create or open an export dataset.
 4. Enter imagery metadata:
    - imagery timestamp, such as `2012-06-30`
    - imagery CRS, such as `EPSG:3857`
    - optional custom tile/WMS template, such as
      `https://tiles.example.org/{z}/{x}/{y}.png`
-5. To use Esri Wayback imagery, pan/zoom to the project area and use:
+5. To use Esri Wayback imagery, pan/zoom to the study area and use:
    - **Load Local Wayback Dates** for versions with local changes near the map
      center
    - **Load All Wayback Dates** if the local list is empty or you want the full
@@ -100,13 +102,13 @@ This template adds a private project/export layer on top of iD:
 7. Draw lines or polygons with the normal iD tools.
 8. Use **Mark Destroyed** while a feature is selected to record destruction
    without deleting the footprint.
-9. Use **Save** or the normal save toolbar button to write the active project.
-10. Use **Export GeoJSON** to download the active project's `features.geojson`.
+9. Use **Save** or the normal save toolbar button to write the active dataset.
+10. Use **Export GeoJSON** to download the active dataset's `features.geojson`.
 
-Project data is written locally under:
+Dataset data is written locally under:
 
 ```text
-projects/<project-folder>/
+datasets/<dataset-folder>/
 |-- metadata.json
 `-- features.geojson
 ```
@@ -115,6 +117,8 @@ The exported GeoJSON properties include the original iD tags plus:
 
 ```text
 objectID
+dataset
+datasetFolder
 project
 projectFolder
 imageryTimestamp
@@ -130,7 +134,7 @@ destroyed
 ```
 
 The normal iD Save button has been repurposed in this template: it writes to the
-active local research project instead of opening the public OSM upload flow.
+active local dataset instead of opening the public OSM upload flow.
 
 ## Template Structure
 
