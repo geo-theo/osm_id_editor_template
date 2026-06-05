@@ -89,11 +89,19 @@ This template adds a private project/export layer on top of iD:
    - imagery CRS, such as `EPSG:3857`
    - optional custom tile/WMS template, such as
      `https://tiles.example.org/{z}/{x}/{y}.png`
-5. Draw lines or polygons with the normal iD tools.
-6. Use **Mark Destroyed** while a feature is selected to record destruction
+5. To use Esri Wayback imagery, pan/zoom to the project area and use:
+   - **Load Local Wayback Dates** for versions with local changes near the map
+     center
+   - **Load All Wayback Dates** if the local list is empty or you want the full
+     archive
+   - **Use Wayback** to switch the basemap to the selected release
+6. To use licensed/custom imagery, enter the tile/WMS template and click
+   **Use Custom Tiles**.
+7. Draw lines or polygons with the normal iD tools.
+8. Use **Mark Destroyed** while a feature is selected to record destruction
    without deleting the footprint.
-7. Use **Save** or the normal save toolbar button to write the active project.
-8. Use **Export GeoJSON** to download the active project's `features.geojson`.
+9. Use **Save** or the normal save toolbar button to write the active project.
+10. Use **Export GeoJSON** to download the active project's `features.geojson`.
 
 Project data is written locally under:
 
@@ -113,6 +121,8 @@ imageryTimestamp
 imageryCRS
 imagerySource
 imageryLayerID
+imagerySourceType
+waybackReleaseNum
 idEditorEntityID
 idEditorEntityType
 changeType
@@ -135,8 +145,7 @@ active local research project instead of opening the public OSM upload flow.
 ## Next Customization Milestones
 
 1. Run the stock editor locally.
-2. Add curated historical imagery layers for specific dates/locations.
-3. Add domain-specific presets for cultural heritage sites, destruction events,
+2. Add domain-specific presets for cultural heritage sites, destruction events,
    confidence levels, source imagery, date ranges, and notes.
-4. Add a richer export/review workflow so edits become reproducible research data
+3. Add a richer export/review workflow so edits become reproducible research data
    rather than accidental public OSM uploads.
