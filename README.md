@@ -79,9 +79,9 @@ npm run id:test       # Run upstream iD tests once
 
 ## Local Dataset Export Workflow
 
-This template is intended to be locked to one study location, such as Timbuktu.
-Within that location, you can create multiple exportable datasets, for example
-one dataset per year or imagery date.
+This template is locked to one study location: Timbuktu. Within that location,
+you can create multiple exportable datasets, for example one dataset per year or
+imagery date.
 
 1. Start the editor with `npm run id:start`.
 2. Open `http://127.0.0.1:8080`.
@@ -102,8 +102,24 @@ one dataset per year or imagery date.
 7. Draw lines or polygons with the normal iD tools.
 8. Use **Mark Destroyed** while a feature is selected to record destruction
    without deleting the footprint.
-9. Use **Save** or the normal save toolbar button to write the active dataset.
-10. Use **Export GeoJSON** to download the active dataset's `features.geojson`.
+9. Use the Dataset panel's OSM filter shortcuts when needed:
+   - **Hide Roads** hides OSM traffic roads, service roads, and paths.
+   - **Buildings Only** shows only buildings and building parts.
+   - **Show All** restores all OSM feature types.
+10. For more detailed feature filtering, open the normal iD **Map Data** panel
+    and expand **Map Features**.
+11. Use **Save** or the normal save toolbar button to write the active dataset.
+12. Use **Export GeoJSON** to download the active dataset's `features.geojson`.
+
+Exports are limited to the Timbuktu study area bounding box:
+
+```text
+west -3.06, south 16.72, east -2.94, north 16.82
+```
+
+Only features whose geometry intersects that box are included in saved/exported
+GeoJSON. The map itself can still pan outside the box while you are working, but
+the dataset export stays locked to Timbuktu.
 
 Dataset data is written locally under:
 
@@ -121,6 +137,8 @@ dataset
 datasetFolder
 project
 projectFolder
+studyArea
+studyAreaName
 imageryTimestamp
 imageryCRS
 imagerySource
