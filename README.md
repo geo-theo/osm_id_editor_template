@@ -102,10 +102,13 @@ imagery date.
 7. Draw lines or polygons with the normal iD tools.
 8. Use **Mark Destroyed** while a feature is selected to record destruction
    without deleting the footprint.
-9. Use the Dataset panel's OSM filter shortcuts when needed:
-   - **Hide Roads** hides OSM traffic roads, service roads, and paths.
-   - **Buildings Only** shows only buildings and building parts.
-   - **Show All** restores all OSM feature types.
+9. Use the Dataset panel's OSM feature focus shortcuts when needed:
+   - **All** restores all OSM feature types.
+   - **Buildings** shows buildings and building parts.
+   - **Roads** shows traffic roads, service roads, and paths.
+   - **POIs** shows point features and address points.
+   - **Land/Water** shows landuse and water features.
+   - **Boundaries** shows boundary features.
 10. For more detailed feature filtering, open the normal iD **Map Data** panel
     and expand **Map Features**.
 11. Use **Save** or the normal save toolbar button to write the active dataset.
