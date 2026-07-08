@@ -99,7 +99,12 @@ imagery date.
    - **Use Wayback** to switch the basemap to the selected release
 6. To use licensed/custom imagery, enter the tile/WMS template and click
    **Use Custom Tiles**.
-7. Draw lines or polygons with the normal iD tools.
+7. Draw points, lines, or polygons with the normal iD tools. The editor now
+   includes cultural heritage presets near the top of the point, line, and area
+   preset lists:
+   - **Cultural Heritage Site**
+   - **Destroyed Heritage Building**
+   - **Heritage Damage Event**
 8. Use **Mark Destroyed** while a feature is selected to record destruction
    without deleting the footprint.
 9. Use the Dataset panel's OSM feature focus shortcuts when needed:
@@ -157,6 +162,31 @@ destroyed
 The normal iD Save button has been repurposed in this template: it writes to the
 active local dataset instead of opening the public OSM upload flow.
 
+## Cultural Heritage Presets
+
+The template adds private research-oriented presets on top of the upstream iD
+tagging schema. These presets do not change public OSM upload behavior; they are
+intended for the local dataset export workflow.
+
+The custom fields include:
+
+```text
+heritage:object_id
+heritage:site_type
+heritage:status
+heritage:damage_type
+heritage:destruction_date
+heritage:destruction_start_date
+heritage:destruction_end_date
+heritage:confidence
+source:imagery
+source:imagery:date
+source:imagery:start_date
+source:imagery:end_date
+heritage:evidence
+research:note
+```
+
 ## Template Structure
 
 ```text
@@ -170,7 +200,5 @@ active local dataset instead of opening the public OSM upload flow.
 ## Next Customization Milestones
 
 1. Run the stock editor locally.
-2. Add domain-specific presets for cultural heritage sites, destruction events,
-   confidence levels, source imagery, date ranges, and notes.
-3. Add a richer export/review workflow so edits become reproducible research data
+2. Add a richer export/review workflow so edits become reproducible research data
    rather than accidental public OSM uploads.
