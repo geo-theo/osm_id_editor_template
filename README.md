@@ -1,204 +1,184 @@
-# OSM iD Editor Template
+# Simple Building Outline Editor
 
-This repository is a local template wrapper around the open-source
-[OpenStreetMap iD editor](https://github.com/openstreetmap/iD). The upstream
-source is included as the `id-editor` git submodule, currently pinned to
-`v2.40.0`.
+A lightweight geospatial editor for drawing building footprints from two years
+of satellite imagery.
 
-The goal of this template is to get a known-good local copy running first.
-After that, it can be adapted for cultural heritage destruction research, custom
-imagery timestamps, private exports, or a private OSM-compatible API.
+This project is intentionally **not** a copy of the OpenStreetMap iD editor.
+OSM iD is useful inspiration for map editing interactions, but it includes far
+more functionality than this workflow needs. This tool should stay small,
+focused, and easy to use.
 
-## Why This Is Possible
+## Goal
 
-iD is open source and available under the ISC License. That means you can run,
-study, modify, and redistribute your own version as long as you preserve the
-license terms.
+Create a browser-based editor that lets a researcher:
 
-Important research note: the stock iD editor is designed for editing current
-OpenStreetMap data. For historical cultural heritage destruction work, you
-probably do **not** want to upload experimental or historical edits directly to
-the public OSM API. A safer first target is a private dataset, a private
-OSM-compatible API, or an export workflow that writes GeoJSON/OSM change files
-for analysis.
+1. Switch between two configured years of satellite imagery.
+2. Draw polygon outlines around buildings visible in each year.
+3. Export only the polygons they drew as GeoJSON, with one layer per year.
 
-## Requirements
+The exported data should be clean research data, not a dump of background map
+features.
 
-- Git
-- Node.js 22 or newer
-- npm
+## Scope
 
-## First-Time Setup
+### In Scope
 
-Clone this template with its submodule:
+- Two satellite imagery layers, one for each year.
+- A simple year switcher.
+- Polygon drawing for building outlines.
+- Polygon editing and deletion.
+- Separate user-drawn layers for each year.
+- GeoJSON export.
+- Optional local autosave in the browser.
 
-```powershell
-git clone --recurse-submodules <your-template-repo-url>
-cd osm_id_editor_template
+### Out of Scope
+
+- Public OSM data loading.
+- OSM account login.
+- Uploading edits to OpenStreetMap.
+- Roads, POIs, boundaries, amenities, addresses, or other preset feature types.
+- OSM tagging forms, validators, changesets, or conflict handling.
+- Point and line drawing, unless a future research workflow requires them.
+
+## User Workflow
+
+The first usable version should support this flow:
+
+1. Open the editor.
+2. The map starts at the study area.
+3. Select the first imagery year.
+4. Draw building polygons visible in that year.
+5. Switch to the second imagery year.
+6. Draw building polygons visible in that year.
+7. Export the results.
+
+The active year's polygons should be visually prominent. The other year's
+polygons can remain visible as faint reference outlines, but they should never
+be confused with the active drawing layer.
+
+## Interface
+
+The editor should open directly to the map. No landing page is needed.
+
+Expected controls:
+
+- Year A
+- Year B
+- Draw polygon
+- Edit polygon
+- Delete polygon
+- Export GeoJSON
+
+The interface should be quiet and utilitarian. The main task is visual
+comparison and careful tracing, so the map should get most of the screen.
+
+## Data Model
+
+The app should maintain one GeoJSON `FeatureCollection` per year:
+
+```json
+{
+  "2012": {
+    "type": "FeatureCollection",
+    "features": []
+  },
+  "2024": {
+    "type": "FeatureCollection",
+    "features": []
+  }
+}
 ```
 
-If you already cloned it without submodules:
+Each drawn polygon should have a minimal, predictable set of properties:
 
-```powershell
-git submodule update --init --recursive
+```json
+{
+  "id": "building-...",
+  "year": "2012",
+  "featureType": "building_outline",
+  "imagerySource": "...",
+  "createdAt": "...",
+  "updatedAt": "..."
+}
 ```
 
-Install iD's dependencies:
+Only user-created polygons should be saved or exported.
 
-```powershell
-npm run id:install
-```
+## Export
 
-Generate the local build assets:
-
-```powershell
-npm run id:prepare
-```
-
-Start the development server:
-
-```powershell
-npm run id:start
-```
-
-Then open:
+The preferred export is a small bundle with one file per year plus one combined
+file:
 
 ```text
-http://127.0.0.1:8080
+buildings_2012.geojson
+buildings_2024.geojson
+buildings_all.geojson
 ```
 
-## Useful Commands
+The combined file should preserve the `year` property so the data can be
+filtered, styled, or compared in GIS software.
 
-```powershell
-npm run id:install    # Install dependencies in id-editor
-npm run id:prepare    # Build generated assets used by the editor
-npm run id:start      # Run the local development server
-npm run id:build      # Create a production build in id-editor/dist
-npm run id:test       # Run upstream iD tests once
-```
+If a zipped bundle is too much for the first version, downloading the three
+files separately is acceptable.
 
-## Local Dataset Export Workflow
+## Recommended Technical Approach
 
-This template is locked to one study location: Timbuktu. Within that location,
-you can create multiple exportable datasets, for example one dataset per year or
-imagery date.
+Build a new standalone app with:
 
-1. Start the editor with `npm run id:start`.
-2. Open `http://127.0.0.1:8080`.
-3. Use the **Dataset** toolbar button to create or open an export dataset.
-4. Enter imagery metadata:
-   - imagery timestamp, such as `2012-06-30`
-   - imagery CRS, such as `EPSG:3857`
-   - optional custom tile/WMS template, such as
-     `https://tiles.example.org/{z}/{x}/{y}.png`
-5. To use Esri Wayback imagery, pan/zoom to the study area and use:
-   - **Load Local Wayback Dates** for versions with local changes near the map
-     center
-   - **Load All Wayback Dates** if the local list is empty or you want the full
-     archive
-   - **Use Wayback** to switch the basemap to the selected release
-6. To use licensed/custom imagery, enter the tile/WMS template and click
-   **Use Custom Tiles**.
-7. Draw points, lines, or polygons with the normal iD tools. The editor now
-   includes cultural heritage presets near the top of the point, line, and area
-   preset lists:
-   - **Cultural Heritage Site**
-   - **Destroyed Heritage Building**
-   - **Heritage Damage Event**
-8. Use **Mark Destroyed** while a feature is selected to record destruction
-   without deleting the footprint.
-9. Use the Dataset panel's OSM feature focus shortcuts when needed:
-   - **All** restores all OSM feature types.
-   - **Buildings** shows buildings and building parts.
-   - **Roads** shows traffic roads, service roads, and paths.
-   - **POIs** shows point features and address points.
-   - **Land/Water** shows landuse and water features.
-   - **Boundaries** shows boundary features.
-10. For more detailed feature filtering, open the normal iD **Map Data** panel
-    and expand **Map Features**.
-11. Use **Save** or the normal save toolbar button to write the active dataset.
-12. Use **Export GeoJSON** to download the active dataset's `features.geojson`.
+- Vite
+- TypeScript
+- OpenLayers
 
-Exports are limited to the Timbuktu study area bounding box:
+OpenLayers is a good fit because it already supports:
+
+- XYZ and raster imagery sources.
+- Vector layers.
+- Polygon drawing.
+- Geometry modification.
+- GeoJSON import and export.
+
+This avoids carrying the complexity of the full iD editor while still providing
+solid geospatial primitives.
+
+## Repository Direction
+
+The existing `id-editor/` directory should be treated as reference material, not
+the foundation for the final tool.
+
+Recommended next step:
 
 ```text
-west -3.06, south 16.72, east -2.94, north 16.82
+simple-building-editor/
 ```
 
-Only features whose geometry intersects that box are included in saved/exported
-GeoJSON. The map itself can still pan outside the box while you are working, but
-the dataset export stays locked to Timbuktu.
+The new app can live in that directory or replace the root-level app structure.
+Either option is fine, but the implementation should be independent from
+`id-editor/`.
 
-Dataset data is written locally under:
+## Implementation Plan
 
-```text
-datasets/<dataset-folder>/
-|-- metadata.json
-`-- features.geojson
-```
+1. Add a new simple app at the repository root or in
+   `simple-building-editor/`.
+2. Replace the current root scripts with `dev`, `build`, and `preview` for the
+   new app.
+3. Add an imagery configuration file with the two year labels and tile URLs.
+4. Build the OpenLayers map with only satellite imagery and two vector drawing
+   layers.
+5. Add polygon draw, edit, and delete behavior, restricted to polygons.
+6. Add local autosave so work survives browser refreshes.
+7. Add GeoJSON export for the two year layers.
+8. Keep the README focused on the stripped-down building outline workflow, not
+   the iD/OSM workflow.
+9. Smoke-test drawing, switching years, refresh recovery, and export contents.
 
-The exported GeoJSON properties include the original iD tags plus:
+## Configuration Needed
 
-```text
-objectID
-dataset
-datasetFolder
-project
-projectFolder
-studyArea
-studyAreaName
-imageryTimestamp
-imageryCRS
-imagerySource
-imageryLayerID
-imagerySourceType
-waybackReleaseNum
-idEditorEntityID
-idEditorEntityType
-changeType
-destroyed
-```
+Before implementation, decide:
 
-The normal iD Save button has been repurposed in this template: it writes to the
-active local dataset instead of opening the public OSM upload flow.
+- The two imagery years.
+- The tile URL or imagery source for each year.
+- The study area and starting map view.
+- Whether exports should be downloaded as a zip bundle or separate files.
 
-## Cultural Heritage Presets
-
-The template adds private research-oriented presets on top of the upstream iD
-tagging schema. These presets do not change public OSM upload behavior; they are
-intended for the local dataset export workflow.
-
-The custom fields include:
-
-```text
-heritage:object_id
-heritage:site_type
-heritage:status
-heritage:damage_type
-heritage:destruction_date
-heritage:destruction_start_date
-heritage:destruction_end_date
-heritage:confidence
-source:imagery
-source:imagery:date
-source:imagery:start_date
-source:imagery:end_date
-heritage:evidence
-research:note
-```
-
-## Template Structure
-
-```text
-.
-|-- id-editor/      # Upstream OpenStreetMap iD source as a pinned submodule
-|-- package.json    # Convenience commands for working from the template root
-|-- .gitmodules     # Submodule pointer to openstreetmap/iD
-`-- README.md       # This guide
-```
-
-## Next Customization Milestones
-
-1. Run the stock editor locally.
-2. Add a richer export/review workflow so edits become reproducible research data
-   rather than accidental public OSM uploads.
+The current Timbuktu study area can remain the default if it is still the target
+research site.
